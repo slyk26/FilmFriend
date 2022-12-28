@@ -1,11 +1,10 @@
 mod commands;
-mod handlers;
+mod event_handler;
 
 use std::env;
 use dotenv::dotenv;
 
 use serenity::prelude::*;
-use handlers::*;
 
 #[tokio::main]
 async fn main() {
@@ -13,8 +12,7 @@ async fn main() {
     let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
 
     let mut client = Client::builder(token, GatewayIntents::empty())
-        .event_handler(ready::Handler)
-        .event_handler(interaction_create::Handler)
+        .event_handler(event_handler::handler::Handler)
         .await
         .expect("Error creating client");
 
