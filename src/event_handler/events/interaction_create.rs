@@ -1,16 +1,16 @@
+use std::collections::HashMap;
 use serenity::model::application::interaction::{Interaction, InteractionResponseType};
 
 use serenity::prelude::*;
-use crate::commands;
+use crate::commands::slash_command::SlashCommand;
 
-pub async fn call(ctx: Context, interaction: Interaction) {
+pub async fn call(ctx: &Context, interaction: &Interaction, commands: &HashMap<String, Box<dyn SlashCommand>>) {
     if let Interaction::ApplicationCommand(command) = interaction {
         println!("Received command interaction: {:#?}", command.data.name);
 
-        let content = match command.data.name.as_str() {
-            "ping" => commands::ping::run(&command.data.options),
-            _ => "not implemented :(".to_string(),
-        };
+        let cmd = commands.get(command.data.name.as_str()).expect("No Command found in command map");
+
+        let content = cmd.run(&command.data.options);
 
         if let Err(why) = command
             .create_interaction_response(&ctx.http, |response| {

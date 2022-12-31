@@ -2,18 +2,18 @@ use serenity::builder::CreateApplicationCommand;
 use serenity::model::prelude::interaction::application_command::CommandDataOption;
 use crate::commands::slash_command::SlashCommand;
 
-pub struct Ping;
+pub struct Poll;
 
-impl SlashCommand for Ping {
+impl SlashCommand for Poll {
     fn name(&self) -> &str {
-        "ping"
+        "poll"
     }
 
     fn run(&self, _options: &[CommandDataOption]) -> String {
-        "Pong!".to_string()
+        "Hi!".to_string()
     }
 
     fn register<'a>(&self, command: &'a mut CreateApplicationCommand) -> &'a mut CreateApplicationCommand {
-        command.name(self.name()).description("A ping command")
+        command.name(self.name()).description("create a poll")
     }
 }
