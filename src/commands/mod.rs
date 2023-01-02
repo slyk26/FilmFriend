@@ -1,13 +1,24 @@
 pub mod ping;
-pub mod poll;
+pub mod submit;
 
 pub mod slash_command {
-    use serenity::builder::CreateApplicationCommand;
-    use serenity::model::prelude::interaction::application_command::CommandDataOption;
+    use serenity::async_trait;
+    use serenity::builder::{CreateApplicationCommand};
+    use serenity::client::Context;
+    use serenity::model::application::interaction::application_command::ApplicationCommandInteraction;
+    use serenity::prelude::SerenityError;
 
+    /// main Trait for a Discord SlashCommand
+    #[async_trait]
     pub trait SlashCommand: Send + Sync {
-        fn name(&self) -> &str;
-        fn run(&self, _options: &[CommandDataOption]) -> String;
+        /// returns the name of this [SlashCommand]
+        fn name(&self) -> String;
+
+        /// modifies a [CreateApplicationCommand]
+        /// this method is called for each defined [SlashCommand] in main.rs
         fn register<'a>(&self, command: &'a mut CreateApplicationCommand) -> &'a mut CreateApplicationCommand;
+
+        /// executes code implemented in each Command struct that implements this Trait
+        async fn execute(&self, ctx: &Context, command: &ApplicationCommandInteraction) -> Result<(), SerenityError>;
     }
 }

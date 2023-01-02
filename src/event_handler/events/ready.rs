@@ -8,18 +8,24 @@ use crate::commands::slash_command::SlashCommand;
 pub async fn call(ctx: &Context, ready: &Ready, commands: &HashMap<String, Box<dyn SlashCommand>>) {
     println!("{} is connected!", ready.user.name);
 
-    for cmd in commands {
-        create_command(cmd.0, cmd.1, ctx).await;
+    // drop all registered commands
+    let known_commands = Command::get_global_application_commands(&ctx.http).await.unwrap();
+
+    println!("dropping existings commands");
+
+    for cmd in known_commands {
+        let _ = Command::delete_global_application_command(&ctx.http, cmd.id).await;
     }
-}
 
-async fn create_command(name: &str, cmd: &Box<dyn SlashCommand>, ctx: &Context) {
-    let result = Command::create_global_application_command(&ctx.http, |command| {
-        cmd.register(command)
-    }).await;
+    // create defined in main
+    for cmd in commands {
+        let result = Command::create_global_application_command(&ctx.http, |command| {
+            cmd.1.register(command)
+        }).await;
 
-    let _ = match result {
-        Ok(_)  => println!("/{} registered", name),
-        Err(_) => panic!("Problem creating command"),
-    };
+        let _ = match result {
+            Ok(_) => println!("/{} registered", cmd.0),
+            Err(_) => panic!("Problem creating command"),
+        };
+    }
 }
