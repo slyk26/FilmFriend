@@ -23,7 +23,6 @@ async fn main() {
         commands
     };
 
-
     // loading .env file
     dotenv().ok();
     let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
