@@ -13,7 +13,7 @@ pub async fn call(ctx: &Context, msi: &ModalSubmitInteraction, db: &Database) {
                 Submit::handle_modal(&msi.data.components, &msi.user, &msi.channel_id, &db).await
             }
 
-            _ => {"".to_string()}
+            _ => { (true, "".to_string()) }
         }
     };
 
@@ -22,7 +22,7 @@ pub async fn call(ctx: &Context, msi: &ModalSubmitInteraction, db: &Database) {
         response
             .kind(InteractionResponseType::ChannelMessageWithSource)
             .interaction_response_data(|msg| {
-                msg.content(response_of_modal).ephemeral(true)
+                msg.content(response_of_modal.1).ephemeral(response_of_modal.0)
             })
     }).await;
 }

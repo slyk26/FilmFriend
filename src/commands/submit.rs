@@ -58,8 +58,8 @@ impl SlashCommand for Submit {
 impl Submit {
     /// iterates over each [ActionRow] to process each input field of a [InteractionResponseType::Modal]
     ///
-    /// returns a response message (text)
-    pub async fn handle_modal(components: &Vec<ActionRow>, submitter: &User, server: &ChannelId, db: &Database) -> String {
+    /// returns a response message (text) and bool if response should be ephermal
+    pub async fn handle_modal(components: &Vec<ActionRow>, submitter: &User, server: &ChannelId, db: &Database) ->  (bool, String) {
         let mut link: String = String::new();
         let mut info: String = String::new();
 
@@ -103,7 +103,7 @@ impl Submit {
             // add to database
             database::insert(server.to_string(), &movie, &db).await
         } else {
-            "Check your IMDb Url again, it was not valid \nHint: Try removing the refferal part at the end (?ref_= ...).".to_string()
+            (true, "Check your IMDb Url again, it was not valid \nHint: Try removing the refferal part at the end (?ref_= ...).".to_string())
         }
     }
 }
