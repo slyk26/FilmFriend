@@ -1,5 +1,6 @@
 pub mod ping;
 pub mod submit;
+pub mod help;
 
 pub mod slash_command {
     use serenity::async_trait;
@@ -13,6 +14,9 @@ pub mod slash_command {
     pub trait SlashCommand: Send + Sync {
         /// returns the name of this [SlashCommand]
         fn name(&self) -> String;
+
+        /// returns the description of this [SlashCommand]
+        fn description(&self) -> String;
 
         /// modifies a [CreateApplicationCommand]
         /// this method is called for each defined [SlashCommand] in main.rs

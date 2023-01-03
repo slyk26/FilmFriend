@@ -1,16 +1,15 @@
-use mongodb::Database;
 use serenity::model::application::interaction::InteractionResponseType;
 use serenity::model::prelude::interaction::modal::ModalSubmitInteraction;
 use serenity::prelude::Context;
 use crate::commands::submit::Submit;
 
-pub async fn call(ctx: &Context, msi: &ModalSubmitInteraction, db: &Database) {
+pub async fn call(ctx: &Context, msi: &ModalSubmitInteraction) {
     let response_of_modal = {
 
         // handle modals here
         match msi.data.custom_id.as_str() {
             "submit" => {
-                Submit::handle_modal(&msi.data.components, &msi.user, &msi.channel_id, &db).await
+                Submit::handle_modal(&msi.data.components, &msi.user, &msi.channel_id).await
             }
 
             _ => { (true, "".to_string()) }

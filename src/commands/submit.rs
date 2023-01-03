@@ -1,6 +1,4 @@
 use mongodb::bson::{DateTime};
-use mongodb::Database;
-use crate::commands::slash_command::{SlashCommand};
 use serenity::builder::{CreateApplicationCommand};
 use serenity::client::Context;
 use serenity::model::application::interaction::InteractionResponseType;
@@ -13,6 +11,7 @@ use serenity::model::user::User;
 use crate::backend::database;
 use crate::backend::models::movie::Movie;
 use crate::backend::utils::is_valid_imdb_link;
+use crate::commands::slash_command::{SlashCommand};
 
 pub struct Submit;
 
@@ -22,8 +21,12 @@ impl SlashCommand for Submit {
         "submit".to_string()
     }
 
+    fn description(&self) -> String {
+        "Submit a movie for Movie Nights".to_string()
+    }
+
     fn register<'a>(&self, command: &'a mut CreateApplicationCommand) -> &'a mut CreateApplicationCommand {
-        command.name(self.name()).description("submit a movie for Movie Nights")
+        command.name(self.name()).description(self.description())
     }
 
     // the modal popup
@@ -59,7 +62,7 @@ impl Submit {
     /// iterates over each [ActionRow] to process each input field of a [InteractionResponseType::Modal]
     ///
     /// returns a response message (text) and bool if response should be ephermal
-    pub async fn handle_modal(components: &Vec<ActionRow>, submitter: &User, server: &ChannelId, db: &Database) ->  (bool, String) {
+    pub async fn handle_modal(components: &Vec<ActionRow>, submitter: &User, server: &ChannelId) ->  (bool, String) {
         let mut link: String = String::new();
         let mut info: String = String::new();
 
@@ -101,7 +104,7 @@ impl Submit {
             };
 
             // add to database
-            database::insert(server.to_string(), &movie, &db).await
+            database::insert(server.to_string(), &movie).await
         } else {
             (true, "Check your IMDb Url again, it was not valid \nHint: Try removing the refferal part at the end (?ref_= ...).".to_string())
         }

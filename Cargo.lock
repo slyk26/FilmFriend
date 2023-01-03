@@ -338,7 +338,9 @@ name = "film_friend"
 version = "0.1.1"
 dependencies = [
  "dotenv",
+ "lazy_static",
  "mongodb",
+ "once_cell",
  "regex",
  "serde",
  "serenity",

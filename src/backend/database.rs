@@ -1,10 +1,11 @@
+use std::env;
 use mongodb::bson::{Bson};
-use mongodb::{Database};
 use crate::backend::models::movie::Movie;
-use crate::backend::utils::already_submitted;
+use crate::backend::utils::{already_submitted, get_mongo};
 
-pub async fn insert(server_id: String, movie: &Movie, db: &Database) -> (bool, String) {
-    let table = db.collection::<Movie>(server_id.to_string().as_str());
+pub async fn insert(server_id: String, movie: &Movie) -> (bool, String) {
+    let table = get_mongo().await.unwrap()
+        .database(env::var("DATABASE").unwrap().as_str()).collection::<Movie>(server_id.to_string().as_str());
 
     let response: (bool, String);
 
