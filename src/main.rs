@@ -10,6 +10,7 @@ use serenity::prelude;
 use serenity::prelude::GatewayIntents;
 
 use crate::commands::help::Help;
+use crate::commands::movies::Movies;
 use crate::commands::ping::Ping;
 use crate::commands::submit::Submit;
 use crate::commands::slash_command::SlashCommand;
@@ -19,6 +20,7 @@ lazy_static! {
     // all usable commands
     static ref COMMANDS: HashMap<String, Box<dyn SlashCommand>> = {
         let mut m: HashMap<String, Box<dyn SlashCommand>> = HashMap::new();
+        m.insert(Movies.name(), Box::new(Movies));
         m.insert(Ping.name(), Box::new(Ping));
         m.insert(Submit.name(), Box::new(Submit));
         m.insert(Help.name(), Box::new(Help));
