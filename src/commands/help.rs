@@ -1,4 +1,4 @@
-use serenity::builder::{CreateApplicationCommand, CreateEmbed};
+use serenity::builder::CreateEmbed;
 use serenity::client::Context;
 use serenity::model::application::interaction::application_command::ApplicationCommandInteraction;
 use serenity::model::application::interaction::InteractionResponseType;
