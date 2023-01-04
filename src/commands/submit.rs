@@ -1,12 +1,11 @@
 use mongodb::bson::{DateTime};
-use serenity::builder::{CreateApplicationCommand};
 use serenity::client::Context;
 use serenity::model::application::interaction::InteractionResponseType;
 use serenity::model::application::interaction::application_command::ApplicationCommandInteraction;
 use serenity::prelude::SerenityError;
 use serenity::async_trait;
 use serenity::model::application::component::{ActionRow, ActionRowComponent, InputTextStyle};
-use serenity::model::prelude::ChannelId;
+use serenity::model::id::GuildId;
 use serenity::model::user::User;
 use crate::backend::database;
 use crate::backend::models::movie::Movie;
@@ -32,7 +31,7 @@ impl SlashCommand for Submit {
                 response
                     .kind(InteractionResponseType::Modal)
                     .interaction_response_data(|body| {
-                        body.custom_id(self.name())
+                        body.custom_id(format!("{}-{}", "submit", command.user.id.0))
                             .title("Submit a Movie")
                             .components(|cc| {
                                 cc.create_action_row(|ar| {
@@ -45,7 +44,7 @@ impl SlashCommand for Submit {
                                 })
                                     .create_action_row(|ar| {
                                         ar.create_input_text(|it| {
-                                            it.custom_id("info").label("info").style(InputTextStyle::Paragraph).placeholder("Additional Information\n(Movie Name, why you suggest it, etc...)")
+                                            it.custom_id("comment").label("comment").style(InputTextStyle::Paragraph).placeholder("comment your submission (optional)").required(false)
                                         })
                                     })
                             })
@@ -58,9 +57,9 @@ impl Submit {
     /// iterates over each [ActionRow] to process each input field of a [InteractionResponseType::Modal]
     ///
     /// returns a response message (text) and bool if response should be ephermal
-    pub async fn handle_modal(components: &Vec<ActionRow>, submitter: &User, server: &ChannelId) ->  (bool, String) {
+    pub async fn handle_modal(components: &Vec<ActionRow>, submitter: &User, server: &GuildId) ->  (bool, String) {
         let mut link: String = String::new();
-        let mut info: String = String::new();
+        let mut comment: String = String::new();
 
         // get data for movie
         for row in components {
@@ -72,8 +71,8 @@ impl Submit {
                                 link = c.value.clone();
                             }
 
-                            "info" => {
-                                info = c.value.clone();
+                            "comment" => {
+                                comment = c.value.clone();
                             }
                             _ => {}
                         };
@@ -94,7 +93,7 @@ impl Submit {
                 id: id.to_string(),
                 link,
                 submitted_by: submitter.id.0,
-                info,
+                comment,
                 added: DateTime::now(),
                 watched: false,
             };
@@ -102,7 +101,10 @@ impl Submit {
             // add to database
             database::insert(server.to_string(), &movie).await
         } else {
-            (true, "Check your IMDb Url again, it was not valid \nHint: Try removing the refferal part at the end (?ref_= ...).".to_string())
+            (true, "Check your IMDb Url again, it was not valid.\
+            \n* Link is case sensitive\
+            \n* Try removing the referral part at the end (?ref_= ...)\
+            \n* dont forget to keep the forward slash (/) at the end".to_string())
         }
     }
 }

@@ -6,7 +6,7 @@ pub struct Movie {
     pub id: String, // imdb id
     pub link: String,
     pub submitted_by: u64, // user id
-    pub info: String,
+    pub comment: String,
     pub added: DateTime,
     pub watched: bool
 }
