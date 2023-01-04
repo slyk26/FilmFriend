@@ -20,10 +20,6 @@ impl SlashCommand for Help{
         "Overview of all available commands and what they do".to_string()
     }
 
-    fn register<'a>(&self, command: &'a mut CreateApplicationCommand) -> &'a mut CreateApplicationCommand {
-        command.name(self.name()).description(self.description())
-    }
-
     async fn execute(&self, ctx: &Context, command: &ApplicationCommandInteraction) -> Result<(), SerenityError> {
         let mut embed = CreateEmbed::default().clone();
 

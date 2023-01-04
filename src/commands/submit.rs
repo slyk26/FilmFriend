@@ -25,10 +25,6 @@ impl SlashCommand for Submit {
         "Submit a movie for Movie Nights".to_string()
     }
 
-    fn register<'a>(&self, command: &'a mut CreateApplicationCommand) -> &'a mut CreateApplicationCommand {
-        command.name(self.name()).description(self.description())
-    }
-
     // the modal popup
     async fn execute(&self, ctx: &Context, command: &ApplicationCommandInteraction) -> Result<(), SerenityError> {
         command

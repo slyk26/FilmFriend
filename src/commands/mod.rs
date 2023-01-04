@@ -21,7 +21,9 @@ pub mod slash_command {
 
         /// modifies a [CreateApplicationCommand]
         /// this method is called for each defined [SlashCommand] in main.rs
-        fn register<'a>(&self, command: &'a mut CreateApplicationCommand) -> &'a mut CreateApplicationCommand;
+        fn register<'a>(&self, command: &'a mut CreateApplicationCommand) -> &'a mut CreateApplicationCommand {
+            command.name(self.name()).description(self.description())
+        }
 
         /// executes code implemented in each Command struct that implements this Trait
         async fn execute(&self, ctx: &Context, command: &ApplicationCommandInteraction) -> Result<(), SerenityError>;

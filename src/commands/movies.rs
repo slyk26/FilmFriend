@@ -19,10 +19,6 @@ impl SlashCommand for Movies {
         "Get a list of all Movies".to_string()
     }
 
-    fn register<'a>(&self, command: &'a mut CreateApplicationCommand) -> &'a mut CreateApplicationCommand {
-        command.name(self.name()).description(self.description())
-    }
-
     async fn execute(&self, ctx: &Context, command: &ApplicationCommandInteraction) -> Result<(), SerenityError> {
         let msg = format!("All submitted and watched Movies can be found at: {}", env::var("MOVIES").unwrap());
         command

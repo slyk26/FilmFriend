@@ -18,10 +18,6 @@ impl SlashCommand for Ping {
         "Check if Bot is alive".to_string()
     }
 
-    fn register<'a>(&self, command: &'a mut CreateApplicationCommand) -> &'a mut CreateApplicationCommand {
-        command.name(self.name()).description(self.description())
-    }
-
     async fn execute(&self, ctx: &Context, command: &ApplicationCommandInteraction) -> Result<(), SerenityError> {
         command
             .create_interaction_response(&ctx.http, |response| {
