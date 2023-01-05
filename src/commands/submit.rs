@@ -85,8 +85,9 @@ impl Submit {
 
         if is_valid_imdb_link(&link) {
             // extract id
-            let idx = link.find("/tt").unwrap();
-            let id = &link[idx + 1..idx + 10];
+            let id_start = link.find("/tt").unwrap();
+            let id_end = &link[id_start + 1 .. ].find("/").unwrap();
+            let id = &link[id_start + 1..id_start + id_end + 1];
 
             // create movie
             let movie = Movie {
