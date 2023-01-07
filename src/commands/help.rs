@@ -21,7 +21,7 @@ impl SlashCommand for Help{
     }
 
     async fn execute(&self, ctx: &Context, command: &ApplicationCommandInteraction) -> Result<(), SerenityError> {
-        let mut embed = CreateEmbed::default().clone();
+        let mut embed = CreateEmbed::default();
 
         embed.title("FilmFriend - Commands")
             .description("I know the following Commands:");

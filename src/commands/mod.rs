@@ -2,6 +2,7 @@ pub mod ping;
 pub mod submit;
 pub mod help;
 pub mod movies;
+pub mod generate;
 
 pub mod slash_command {
     use serenity::async_trait;
